@@ -1,0 +1,33 @@
+
+Sub FormatAllTables()
+
+    Const START_POINT As Long = 2
+
+    Dim tbl As Table
+    Dim counter As Long
+
+    counter = 0
+    For Each tbl In ActiveDocument.Tables
+        counter = counter + 1
+        
+        If counter < START_POINT Then GoTo NextTable
+
+        ' Skip invalid tables
+        If tbl.Rows.Count < 2 Or tbl.Columns.Count < 2 Then
+            tbl.Columns(1).Width = width_
+            GoTo NextTable
+        End If
+
+
+        tbl.Rows(1).HeadingFormat = True
+
+    
+NextTable:
+    Next tbl
+
+    MsgBox "Table formatting completed.", vbInformation
+
+End Sub
+
+
+

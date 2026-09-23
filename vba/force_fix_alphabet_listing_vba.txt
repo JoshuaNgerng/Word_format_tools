@@ -1,0 +1,36 @@
+Sub FixAlphabetListIndentation()
+
+    Dim p As Paragraph
+    Dim PrevStyle As String
+
+    PrevStyle = ""
+
+    For Each p In ActiveDocument.Paragraphs
+
+        If p.Style = "AlphabetListing" Then
+
+            'Fix indentation
+            With p.Range.ParagraphFormat
+                .LeftIndent = InchesToPoints(0.75)
+                .FirstLineIndent = -InchesToPoints(0.25)
+            End With
+
+            'Start of a new AlphabetListing block
+            If PrevStyle <> "AlphabetListing" Then
+
+                p.Range.ListFormat.ApplyListTemplateWithLevel _
+                    ListTemplate:=p.Range.ListFormat.ListTemplate, _
+                    ContinuePreviousList:=False, _
+                    ApplyTo:=wdListApplyToWholeList, _
+                    DefaultListBehavior:=wdWord10ListBehavior
+
+            End If
+
+        End If
+
+        PrevStyle = CStr(p.Style)
+
+    Next p
+
+End Sub
+

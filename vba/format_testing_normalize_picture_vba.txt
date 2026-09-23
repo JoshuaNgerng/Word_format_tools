@@ -1,0 +1,42 @@
+Sub FormatPictures()
+
+    Dim ils As InlineShape
+    Dim maxWidth As Single
+
+    Const PIC_WIDTH As Single = 6.7
+
+    maxWidth = InchesToPoints(PIC_WIDTH)
+
+    For Each ils In ActiveDocument.InlineShapes
+
+        On Error Resume Next
+
+        ' Skip pictures inside tables
+        If ils.Range.Information(wdWithInTable) Then
+            GoTo SkipPicture
+        End If
+
+        With ils
+            ' Keep inline with text
+            .LockAspectRatio = msoTrue
+            .Width = maxWidth
+        End With
+
+        ' Match table paragraph alignment
+        With ils.Range.ParagraphFormat
+            .Alignment = wdAlignParagraphLeft
+            .LeftIndent = InchesToPoints(0.5)
+            .FirstLineIndent = 0
+            .SpaceBefore = 0
+            .SpaceAfter = 0
+        End With
+
+SkipPicture:
+        Err.Clear
+        On Error GoTo 0
+
+    Next ils
+
+    MsgBox "Picture formatting completed.", vbInformation
+
+End Sub

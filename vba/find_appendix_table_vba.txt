@@ -1,0 +1,29 @@
+Sub FindAppendixTables()
+
+    Dim tbl As Table
+    Dim tblIndex As Long
+    Dim cellText As String
+
+    tblIndex = 0
+
+    For Each tbl In ActiveDocument.Tables
+
+        tblIndex = tblIndex + 1
+
+        ' Check table is exactly 1 row x 1 column
+        If tbl.Rows.Count = 1 And tbl.Columns.Count = 1 Then
+
+            cellText = tbl.Cell(1, 1).Range.Text
+            cellText = Replace(cellText, Chr(13), "")
+            cellText = Replace(cellText, Chr(7), "")
+            cellText = Trim(cellText)
+
+            If cellText = "APPENDIX" Then
+                Debug.Print "Found APPENDIX in table #" & tblIndex
+            End If
+
+        End If
+
+    Next tbl
+
+End Sub

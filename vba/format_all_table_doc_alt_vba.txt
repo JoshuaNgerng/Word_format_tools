@@ -1,0 +1,101 @@
+
+Sub FormatAllTables()
+
+    Dim tbl As Table
+    Dim rw As Row
+    Dim cl As Cell
+    Dim r As Long
+    Dim c As Long
+    Dim check As Long
+    Dim counter As Long
+    Dim size As Long
+    
+    check = 0
+    counter = 0
+    size = 10
+
+    For Each tbl In ActiveDocument.Tables
+
+        counter = counter + 1
+        
+        If counter < check Then GoTo NextTable
+        
+        ' Set table width to 16 cm and center alignment
+        With tbl
+            .AutoFitBehavior wdAutoFitFixed
+            .AllowAutoFit = False
+        
+            .PreferredWidthType = wdPreferredWidthPoints
+            .PreferredWidth = InchesToPoints(5.8)
+        
+            .Rows.Alignment = wdAlignRowLeft
+            .Rows.SetLeftIndent LeftIndent:=InchesToPoints(0.5), _
+                                RulerStyle:=wdAdjustNone
+
+            .Style = "Table Grid"
+        End With
+
+
+        ' Skip invalid tables
+        If tbl.Rows.Count < 1 Or tbl.Columns.Count < 1 Then
+            GoTo NextTable
+        End If
+
+        ' Format header row
+        For Each cl In tbl.Rows(1).Cells
+            With cl.Range
+                .ParagraphFormat.Alignment = wdAlignParagraphCenter
+                .ParagraphFormat.SpaceAfter = 0
+                .ParagraphFormat.SpaceBefore = 0
+                
+                .Font.Name = "Arial"
+                .Font.size = size
+                .Font.Bold = True
+            End With
+
+            ' Header background colour (#99BEE3)
+            cl.Shading.BackgroundPatternColor = RGB(153, 190, 227)
+        Next cl
+
+        ' Format subsequent rows
+        For r = 2 To tbl.Rows.Count
+
+            ' Alternate row colours
+            If (r Mod 2) = 0 Then
+                tbl.Rows(r).Shading.BackgroundPatternColor = RGB(255, 255, 255)   ' White
+            Else
+                tbl.Rows(r).Shading.BackgroundPatternColor = RGB(243, 246, 250)   ' #F3F6FA
+            End If
+
+            For c = 1 To tbl.Rows(r).Cells.Count
+
+                With tbl.Cell(r, c).Range
+                    .ParagraphFormat.Alignment = wdAlignParagraphLeft
+                    .ParagraphFormat.SpaceAfter = 0
+                    .ParagraphFormat.SpaceBefore = 0
+
+                    .Font.Name = "Arial"
+                    .Font.size = size
+
+                    If c = 1 Then
+                        .Font.Bold = True
+                    Else
+                        .Font.Bold = False
+                    End If
+                End With
+
+            Next c
+
+        Next r
+        tbl.Rows.SetLeftIndent LeftIndent:=InchesToPoints(0.5), _
+                               RulerStyle:=wdAdjustNone
+NextTable:
+    Next tbl
+
+    MsgBox "Table formatting completed.", vbInformation
+
+End Sub
+
+
+
+

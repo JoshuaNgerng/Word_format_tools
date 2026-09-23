@@ -1,0 +1,28 @@
+Sub FixAlphabetListIndentation()
+
+    Dim p As Paragraph
+
+    For Each p In ActiveDocument.Paragraphs
+
+        Select Case CStr(p.Style)
+            Case "AlphabetList", "BulletList", "AlphabetListing"
+        
+                With p.Range.ParagraphFormat
+                    .LeftIndent = InchesToPoints(0.75)
+                    .FirstLineIndent = -InchesToPoints(0.25)
+                End With
+        
+            Case "1HeadingStyle", "2HeadingStyle", ""
+                
+                With p.Range.ParagraphFormat
+                    .LeftIndent = InchesToPoints()
+                    .FirstLineIndent = InchesToPoints()
+                End With
+        
+        End Select
+
+    Next p
+
+End Sub
+
+
